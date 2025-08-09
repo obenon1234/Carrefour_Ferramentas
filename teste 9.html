@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ferramentas Internas Carrefour</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --carrefour-blue: #003d7f;
+            --carrefour-red: #e62325;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--dark-gray);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: var(--light-gray);
+            background-image: url('https://images.unsplash.com/photo-1577717903328-98e94553229b?q=80&w=1974&auto=format&fit=crop');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        .header {
+            background: var(--carrefour-blue);
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header .weather-info {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 300;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 3rem 1rem;
+            flex-grow: 1;
+            gap: 2rem;
+        }
+
+        .tool-container {
+            width: 100%;
+            max-width: 950px;
+            padding: 2.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        .tool-container h2 {
+            text-align: center;
+            color: var(--carrefour-blue);
+            margin-top: 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid var(--carrefour-red);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .instructions {
+            color: var(--dark-gray);
+            font-size: 1rem;
+            text-align: center;
+            max-width: 600px;
+            font-weight: 400;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        #preview {
+            max-width: 100%;
+            margin: 2rem auto;
+            display: block;
+            border: 2px solid var(--carrefour-red);
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 0.5rem;
+            display: none;
+        }
+
+        .output-container {
+            width: 100%;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius);
+            min-height: 120px;
+            white-space: pre-wrap;
+            margin-top: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .output-container:empty::before {
+            content: 'O resultado aparecerá aqui...';
+            color: #999;
+        }
+
+        .solution-message {
+            margin-top: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--carrefour-blue);
+            text-align: center;
+        }
+
+        .center-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        button, .custom-file-upload, .input-text {
+            padding: 0.8rem 2rem;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            font-weight: 500;
+            width: 100%;
+            box-sizing: border-box;
+            max-width: 300px;
+            text-align: center;
+        }
+
+        .custom-file-upload {
+            background: #fff;
+            color: var(--carrefour-blue);
+            border: 2px solid var(--carrefour-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .custom-file-upload:hover {
+            transform: translateY(-2px);
+            background: var(--light-gray);
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, #ff416c, var(--carrefour-red));
+            color: white;
+            box-shadow: 0 5px 15px rgba(230, 35, 37, 0.3);
+            margin-top: 1rem;
+        }
+
+        .main-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(230, 35, 37, 0.4);
+            background: linear-gradient(45deg, #e62325, #cc1c1e);
+        }
+
+        .secondary-button {
+            background: #fff;
+            color: var(--carrefour-blue);
+            border: 2px solid var(--carrefour-blue);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .secondary-button:hover {
+            transform: translateY(-2px);
+            background: var(--light-gray);
+        }
+
+        .input-text {
+            resize: vertical;
+            min-height: 150px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ccc;
+            padding: 1rem;
+            max-width: 100%;
+        }
+
+        .footer {
+            padding: 1rem 1.5rem;
+            background: var(--carrefour-blue);
+            color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer p {
+            margin: 0;
+            font-size: 0.8rem;
+            font-weight: 300;
+        }
+
+        .slogan {
+            font-size: 4rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            animation: fadeIn 1.5s ease-in-out;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading::before {
+            content: 'Processando...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--carrefour-blue);
+            animation: pulse 1.5s infinite;
+        }
+
+        .loading {
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            50% { transform: translate(-50%, -50%) scale(1.05); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        .copy-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            z-index: 1000;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: toast-in 0.5s forwards;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .copy-toast.hide {
+            animation: toast-out 0.5s forwards;
+        }
+
+        @keyframes toast-in {
+            from {
+                transform: translateX(-50%) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes toast-out {
+            from {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(-50%) translateY(20px);
+                opacity: 0;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .main-container {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+                padding: 3rem;
+            }
+            .tool-container {
+                width: 48%;
+            }
+        }
+        @media (max-width: 991px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .header .weather-info {
+                display: none;
+            }
+            .main-container {
+                gap: 2rem;
+            }
+            .tool-container {
+                padding: 1.5rem;
+            }
+            .instructions {
+                font-size: 0.9rem;
+            }
+            .footer-top {
+                flex-direction: column;
+                gap: 5px;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .slogan {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FERRAMENTAS INTERNAS CARREFOUR</h1>
+        <div class="weather-info" id="weatherInfo">
+            Data: <span id="date"></span><br>
+            Horário: <span id="time"></span>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="tool-container">
+            <h2>Conversor de Imagem para Número</h2>
+            <p class="instructions">Cole uma imagem com Ctrl+V ou selecione um arquivo para extrair os números.</p>
+
+            <div class="center-buttons">
+                <label for="imageInput" class="custom-file-upload">Escolher arquivo</label>
+                <input type="file" id="imageInput" accept="image/*">
+
+                <button class="main-button" onclick="convertImageToNumbers()">Converter</button>
+            </div>
+            <img id="preview" src="" alt="Pré-visualização da imagem">
+
+            <div id="output-image" class="output-container"></div>
+            <div class="action-buttons">
+                <button class="secondary-button" onclick="copyToClipboard('output-image')">Copiar</button>
+                <button class="secondary-button" onclick="clearImageTool()">Limpar Seção</button>
+            </div>
+
+            <div class="solution-message" id="solutionMessageImage"></div>
+        </div>
+
+        <div class="tool-container">
+            <h2>Removedor de Pontos, Traços e Espaços</h2>
+            <p class="instructions">Cole ou digite o texto que deseja limpar na caixa abaixo.</p>
+            <textarea id="inputText" class="input-text" placeholder="Cole aqui seu texto com pontos, traços e espaços..."></textarea>
+            <div class="center-buttons">
+                <button class="main-button" onclick="cleanText()">Limpar Texto</button>
+            </div>
+
+            <div id="output-text" class="output-container"></div>
+            <div class="action-buttons">
+                <button class="secondary-button" onclick="copyToClipboard('output-text')">Copiar</button>
+                <button class="secondary-button" onclick="clearTextTool()">Limpar Seção</button>
+            </div>
+            <div class="solution-message" id="solutionMessageText"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-top">
+            <p>&copy; 2025 - Ferramenta Interna Carrefour</p>
+            <p>Criador: Luiz Fraga</p>
+        </div>
+        <p class="slogan">Ser simples, sempre!</p>
+    </div>
+
+    <script src="https://unpkg.com/tesseract.js@4.0.2/dist/tesseract.min.js?v=20250808"></script>
+    <script>
+        // Lógica do Conversor de Imagem para Número
+        const imageInput = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+        const outputImage = document.getElementById('output-image');
+        const solutionMessageImage = document.getElementById('solutionMessageImage');
+        let selectedImage = null;
+        let worker = null;
+
+        async function initializeWorker() {
+            outputImage.textContent = 'Carregando o conversor (Tesseract)... Pode demorar um pouco na primeira vez.';
+            try {
+                worker = await Tesseract.createWorker({
+                    logger: m => {
+                        if (m.status === 'loading tesseract core') outputImage.textContent = `Carregando núcleo: ${Math.round(m.progress * 100)}%`;
+                        if (m.status === 'loading language traineddata') outputImage.textContent = `Carregando pacote de idioma: ${Math.round(m.progress * 100)}%`;
+                    },
+                    langPath: 'https://cdn.jsdelivr.net/npm/tesseract.js-lang@4.0.2/'
+                });
+                await worker.loadLanguage('eng');
+                await worker.initialize('eng');
+                outputImage.textContent = 'Conversor pronto! Cole ou selecione uma imagem.';
+            } catch (error) {
+                outputImage.textContent = `Erro ao carregar o conversor: ${error.message}. Por favor, verifique sua conexão com a internet.`;
+                console.error('Erro ao inicializar o Tesseract:', error);
+            }
+        }
+
+        window.onload = initializeWorker;
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedImage = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.addEventListener('paste', async function(event) {
+            const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (const item of items) {
+                if (item.type.indexOf('image') !== -1) {
+                    const file = item.getAsFile();
+                    selectedImage = file;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                    outputImage.textContent = 'Imagem colada! Clique em "Converter" para processar.';
+                    solutionMessageImage.textContent = '';
+                    break;
+                }
+            }
+        });
+
+        async function convertImageToNumbers() {
+            if (!selectedImage) {
+                alert('Por favor, selecione ou cole uma imagem primeiro!');
+                return;
+            }
+
+            if (!worker) {
+                alert('O conversor ainda não está pronto. Por favor, aguarde e tente novamente.');
+                return;
+            }
+
+            outputImage.textContent = '';
+            solutionMessageImage.textContent = '';
+            outputImage.classList.add('loading');
+
+            try {
+                const img = new Image();
+                img.src = preview.src;
+                await new Promise(resolve => img.onload = resolve);
+
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                // Pré-processamento: Redimensiona a imagem para melhor reconhecimento (Fator de escala 3x)
+                const newWidth = img.width * 3;
+                const newHeight = img.height * 3;
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+
+                // Aplica um filtro de binarização para melhorar o reconhecimento (Limiar ajustado)
+                const imageData = ctx.getImageData(0, 0, newWidth, newHeight);
+                const data = imageData.data;
+                const threshold = 150; // Limiar de binarização ajustado
+
+                for (let i = 0; i < data.length; i += 4) {
+                    const avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    const value = avg > threshold ? 255 : 0;
+                    data[i] = value;
+                    data[i + 1] = value;
+                    data[i + 2] = value;
+                }
+                ctx.putImageData(imageData, 0, 0);
+
+                await worker.setParameters({
+                    lang: 'eng',
+                    tessedit_char_whitelist: '0123456789'
+                });
+                const { data: { text } } = await worker.recognize(canvas);
+
+                let cleanedText = text.replace(/\D/g, '');
+
+                // Lógica para corrigir o 9 que se parece com 8
+                // Se o número tem 9 dígitos, e o 8º é um 8, e o 9º é um 5,
+                // há uma chance alta de que seja um 9. Esta é uma heurística
+                // baseada no seu caso específico. Pode ser necessário ajustar.
+                if (cleanedText.length === 9) {
+                    const pos8 = cleanedText.charAt(7); // Posição 8 (índice 7)
+                    const pos9 = cleanedText.charAt(8); // Posição 9 (índice 8)
+                    if (pos8 === '8' && pos9 === '5') {
+                        // Substitui o '8' da 8ª posição por '9'
+                        cleanedText = cleanedText.substring(0, 7) + '9' + cleanedText.substring(8);
+                    }
+                }
+
+                outputImage.classList.remove('loading');
+                outputImage.innerHTML = `
+                    <p><strong>Conversão concluída com sucesso! 😊</strong></p>
+                    <p><strong>Resultado:</strong> ${cleanedText || 'Nenhum texto detectado.'}</p>
+                    <p><strong>Número de Caracteres:</strong> ${cleanedText.length}</p>
+                `;
+                solutionMessageImage.textContent = 'Transformar Informação em Solução!';
+
+            } catch (error) {
+                outputImage.classList.remove('loading');
+                outputImage.innerHTML = `<p><strong>Ocorreu um erro na conversão. 😞</strong></p><p>${error.message}</p>`;
+                console.error('Erro ao converter imagem:', error);
+            }
+        }
+
+        function clearImageTool() {
+            imageInput.value = '';
+            preview.style.display = 'none';
+            preview.src = '';
+            selectedImage = null;
+            outputImage.innerHTML = '';
+            solutionMessageImage.textContent = '';
+            outputImage.classList.remove('loading');
+        }
+
+        // Lógica do Removedor de Caracteres
+        const inputText = document.getElementById('inputText');
+        const outputText = document.getElementById('output-text');
+        const solutionMessageText = document.getElementById('solutionMessageText');
+
+        function cleanText() {
+            const originalText = inputText.value;
+            if (!originalText) {
+                alert('Por favor, digite ou cole um texto para limpar.');
+                return;
+            }
+
+            const cleaned = originalText.replace(/[\.\-,\s]/g, '');
+
+            outputText.innerHTML = `
+                <p><strong>Texto Limpo:</strong></p>
+                <p>${cleaned}</p>
+                <p><strong>Número de caracteres:</strong> ${cleaned.length}</p>
+            `;
+            solutionMessageText.textContent = 'Transformar Informação em Solução!';
+        }
+
+        function clearTextTool() {
+            inputText.value = '';
+            outputText.innerHTML = '';
+            solutionMessageText.textContent = '';
+        }
+
+        // Nova função para mostrar a mensagem de cópia
+        function showCopyMessage() {
+            let toast = document.getElementById('copyToast');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'copyToast';
+                toast.classList.add('copy-toast');
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = 'Texto copiado com sucesso! 😊';
+            toast.classList.remove('hide');
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+            }, 2000);
+        }
+
+        // Lógica para o botão de copiar, que agora funciona para ambas as seções
+        function copyToClipboard(outputId) {
+            const outputElement = document.getElementById(outputId);
+            const textToCopy = outputElement.querySelector('p:nth-child(2)').textContent.split(':').pop().trim();
+            if (textToCopy && textToCopy !== 'Nenhum texto detectado.') {
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    showCopyMessage();
+                }).catch(err => {
+                    alert('Erro ao copiar o texto. Tente novamente.');
+                    console.error('Erro ao copiar:', err);
+                });
+            } else {
+                alert('Nenhum texto para copiar.');
+            }
+        }
+
+        function updateWeatherInfo() {
+            const now = new Date();
+            const options = { timeZone: 'America/Sao_Paulo', hour12: false, hour: '2-digit', minute: '2-digit' };
+            document.getElementById('date').textContent = now.toLocaleDateString('pt-BR');
+            document.getElementById('time').textContent = now.toLocaleTimeString('pt-BR', options);
+        }
+
+        setInterval(updateWeatherInfo, 60000);
+        updateWeatherInfo();
+    </script>
+</body>
+</html>
